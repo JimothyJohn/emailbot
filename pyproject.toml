@@ -1,0 +1,34 @@
+[project]
+name = "emailbot"
+version = "0.1.0"
+description = "AWS Serverless Email Assistant"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "boto3>=1.34.80",
+    "google-genai>=0.5.0",
+    "pydantic>=2.7.0",
+    "aws-lambda-powertools>=2.36.0",
+    "markdown>=3.10.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.1.1",
+    "pytest-mock>=3.14.0",
+    "moto>=5.0.5",
+    "pytest-cov>=7.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["assistant"]
+
+[tool.pytest.ini_options]
+markers = [
+    "unit: mark a test as a unit test",
+    "integration: mark test as integration test"
+]

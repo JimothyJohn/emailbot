@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless AWS Email Assistant
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.12
+    Architectures:
+      - arm64
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - prod
+      - test
+  GeminiApiKeyParameterName:
+    Type: String
+    Default: /emailbot/dev/gemini-api-key
+    Description: SSM Parameter Store name containing the Gemini API Key
+
+Resources:
+  RawEmailBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "emailbot-raw-emails-${AWS::Region}-${AWS::AccountId}"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  RawEmailBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref RawEmailBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ses.amazonaws.com
+            Action: s3:PutObject
+            Resource: !Sub "arn:aws:s3:::emailbot-raw-emails-${AWS::Region}-${AWS::AccountId}/*"
+            Condition:
+              StringEquals:
+                "aws:SourceAccount": !Ref "AWS::AccountId"
+
+
+  IdempotencyTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: message_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: message_id
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: expires_at
+        Enabled: true
+
+  EmailAssistantFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: assistant.app.lambda_handler
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:GetObjectVersion
+              Resource: !Sub "arn:aws:s3:::emailbot-raw-emails-${AWS::Region}-${AWS::AccountId}/*"
+        - DynamoDBCrudPolicy:
+            TableName: !Ref IdempotencyTable
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter*${GeminiApiKeyParameterName}"
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ses:SendEmail
+                - ses:SendRawEmail
+              Resource: "*"
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref IdempotencyTable
+          S3_BUCKET: !Sub "emailbot-raw-emails-${AWS::Region}-${AWS::AccountId}"
+          GEMINI_API_KEY_PARAM_NAME: !Ref GeminiApiKeyParameterName
+          POWERTOOLS_SERVICE_NAME: "EmailAssistant"
+          LOG_LEVEL: "INFO"
+      Events:
+        EmailReceived:
+          Type: S3
+          Properties:
+            Bucket: !Ref RawEmailBucket
+            Events: s3:ObjectCreated:*
+
+
+
+Outputs:
+  RawEmailBucketName:
+    Description: S3 bucket for raw emails
+    Value: !Ref RawEmailBucket
+  IdempotencyTableName:
+    Description: DynamoDB table for processed emails
+    Value: !Ref IdempotencyTable

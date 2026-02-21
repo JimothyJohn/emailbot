@@ -1,0 +1,40 @@
+#!/bin/bash
+set -e
+
+# Default values
+DEPLOY=false
+
+while getopts ":p" opt; do
+  case ${opt} in
+    p )
+      DEPLOY=true
+      ;;
+    \? )
+      echo "Usage: Quickstart [-p]"
+      exit 1
+      ;;
+  esac
+done
+
+echo "Syncing uv lockfile..."
+uv sync
+
+echo "Running checks..."
+uv run pytest -m unit || uv run pytest
+
+echo "Validating SAM template..."
+sam validate
+
+if [ "$DEPLOY" = true ]; then
+  echo "Exporting uv lockfile to requirements.txt for SAM..."
+  uv export --format requirements-txt --no-hashes --no-emit-project > requirements.txt
+  
+  echo "Bundling assets into compute payload..."
+  cp PERSONALITY.md assistant/
+  
+  echo "Building via SAM..."
+  sam build
+  
+  echo "Deploying via SAM..."
+  sam deploy
+fi
