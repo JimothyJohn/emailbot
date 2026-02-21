@@ -75,7 +75,7 @@ def generate_llm_response(text_body: str) -> str:
     system_instruction = get_personality()
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.1-pro",
             contents=f"Respond to this email:\n\n{text_body}",
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction,

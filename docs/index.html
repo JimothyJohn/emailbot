@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emailbot: Serverless AI Assistant</title>
-    <meta name="description" content="An elegant, 100% Serverless AWS email assistant powered by Google Gemini 2.5 Flash.">
+    <meta name="description" content="An elegant, 100% Serverless AWS email assistant powered by Google Gemini 3.1 Pro.">
     
     <!-- Modern Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,6 +61,7 @@
             letter-spacing: -0.5px;
             background: linear-gradient(to right, #fff, #a5b4fc);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -169,6 +170,7 @@
             margin-bottom: 20px;
             background: linear-gradient(to right, #fff, #a5b4fc);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -209,7 +211,7 @@
 
         <section class="hero">
             <h1>Intelligence, Delivered.</h1>
-            <p>A 100% Serverless AWS email assistant powered by Google Gemini 2.5 Flash. It reads, thinks, searches the web, and replies with beautiful HTML.</p>
+            <p>A 100% Serverless AWS email assistant powered by Google Gemini 3.1 Pro. It reads, thinks, searches the web, and replies with beautiful HTML.</p>
             <a href="https://github.com/JimothyJohn/emailbot" class="cta-btn">View on GitHub</a>
         </section>
 
@@ -221,7 +223,7 @@
             </div>
             <div class="feature-card">
                 <div class="icon">🧠</div>
-                <h3>Gemini 2.5 Flash</h3>
+                <h3>Gemini 3.1 Pro</h3>
                 <p>Equipped with Google GenAI SDK. Capable of processing deep multipart email bodies, deducing context, and invoking live web-search tools.</p>
             </div>
             <div class="feature-card">
@@ -244,7 +246,7 @@
                 S3 Trigger → <span class="hl">AWS Lambda</span><br>
                 Lambda Check → <span class="hl">DynamoDB</span> (Message-ID Exist?)<br>
                 Lambda Extraction → Parse deep <span class="hl">MIME</span> Multipart<br>
-                Lambda Inference → <span class="hl">Gemini 2.5 Flash</span> (Web Search Tools Active)<br>
+                Lambda Inference → <span class="hl">Gemini 3.1 Pro</span> (Web Search Tools Active)<br>
                 Lambda Render → Convert <span class="hl">Markdown</span> to Elegant <span class="hl">HTML</span><br>
                 Outbound Action → <span class="hl">Amazon SES</span> SendEmail (Multipart/Alternative)<br>
             </div>

@@ -9,7 +9,7 @@ It runs entirely within AWS free-tier native infrastructure, utilizing minimal c
 - **Ingestion:** SES drops incoming raw raw `.eml` files into a locked-down **Amazon S3** bucket.
 - **Compute:** S3 triggers an **AWS Lambda** execution, which decompresses nested `multipart` email bodies.
 - **State Management:** **Amazon DynamoDB** acts as an ultra-fast caching layer for idempotency, ensuring the same `Message-ID` never gets processed twice (preventing infinite email loops).
-- **Reasoning:** The Lambda function invokes the `gemini-2.5-flash` model, injecting context like `PERSONALITY.md` and enabling internet search tools (`google-search`) for live data lookups.
+  - **Reasoning:** The Lambda function invokes the `gemini-3.1-pro` model, injecting context like `PERSONALITY.md` and enabling internet search tools (`google-search`) for live data lookups.
 - **Outbound:** The raw Markdown response is compiled into beautiful HTML and dispatched back to the original sender via **Amazon SES**.
 
 ## Configuration
