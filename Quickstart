@@ -1,6 +1,31 @@
 #!/bin/bash
 set -e
 
+# --- Auto Dependency Setup ---
+# Check and install 'uv'
+if ! command -v uv &> /dev/null; then
+    echo "uv could not be found. Automatically installing..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
+fi
+
+# Check and install 'sam'
+if ! command -v sam &> /dev/null; then
+    echo "aws-sam-cli could not be found. Automatically installing..."
+    if [ "$(uname)" == "Darwin" ]; then
+        if ! command -v brew &> /dev/null; then
+            echo "Error: Homebrew not found! Please install Homebrew first to auto-install SAM."
+            exit 1
+        fi
+        brew tap aws/tap
+        brew install aws-sam-cli
+    else
+        echo "Error: Please manually install aws-sam-cli for your OS."
+        exit 1
+    fi
+fi
+# -----------------------------
+
 # Default values
 DEPLOY=false
 
