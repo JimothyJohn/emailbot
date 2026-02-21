@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emailbot: Serverless AI Assistant</title>
+    <meta name="description" content="An elegant, 100% Serverless AWS email assistant powered by Google Gemini 2.5 Flash.">
+    
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #050511;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Nav */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 32px 0;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4.5rem;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px var(--accent-glow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--accent-glow);
+            background-color: #4f46e5;
+        }
+
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            padding: 40px 0 100px;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 32px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .icon {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(99, 102, 241, 0.05));
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Architecture */
+        .architecture {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 100px;
+        }
+
+        .architecture h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .architecture-flow {
+            font-family: 'Space Grotesk', monospace;
+            color: var(--text-muted);
+            line-height: 2;
+            padding: 24px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            border: 1px dashed rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+        }
+        
+        .hl { color: #a5b4fc; font-weight: 600; }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .hero p { font-size: 1.1rem; }
+            .architecture { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <nav>
+            <div class="logo">Emailbot</div>
+        </nav>
+
+        <section class="hero">
+            <h1>Intelligence, Delivered.</h1>
+            <p>A 100% Serverless AWS email assistant powered by Google Gemini 2.5 Flash. It reads, thinks, searches the web, and replies with beautiful HTML.</p>
+            <a href="https://github.com/JimothyJohn/emailbot" class="cta-btn">View on GitHub</a>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="icon">⚡️</div>
+                <h3>Serverless Scale</h3>
+                <p>Runs entirely on AWS Free Tier. SES inbound routing heavily restricts spam, while S3 streams payloads directly to ephemeral Lambda invocations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🧠</div>
+                <h3>Gemini 2.5 Flash</h3>
+                <p>Equipped with Google GenAI SDK. Capable of processing deep multipart email bodies, deducing context, and invoking live web-search tools.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🎨</div>
+                <h3>Elegant Output</h3>
+                <p>Emailbot writes logically structured Markdown, which the Lambda engine parses into meticulously styled HTML tables, lists, and quote blocks before dispatch.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🛡️</div>
+                <h3>Idempotent Execution</h3>
+                <p>Backed by an ultra-fast DynamoDB caching layer. Duplicate `Message-ID` drops are immediately orphaned, preventing automated out-of-office email loops.</p>
+            </div>
+        </section>
+
+        <section class="architecture">
+            <h2>The Data Pipeline</h2>
+            <div class="architecture-flow">
+                Inbound Email → <span class="hl">Route 53</span> MX Record → <span class="hl">Amazon SES</span> Ruleset<br>
+                SES Payload → <span class="hl">Amazon S3</span> Raw Bucket<br>
+                S3 Trigger → <span class="hl">AWS Lambda</span><br>
+                Lambda Check → <span class="hl">DynamoDB</span> (Message-ID Exist?)<br>
+                Lambda Extraction → Parse deep <span class="hl">MIME</span> Multipart<br>
+                Lambda Inference → <span class="hl">Gemini 2.5 Flash</span> (Web Search Tools Active)<br>
+                Lambda Render → Convert <span class="hl">Markdown</span> to Elegant <span class="hl">HTML</span><br>
+                Outbound Action → <span class="hl">Amazon SES</span> SendEmail (Multipart/Alternative)<br>
+            </div>
+        </section>
+
+        <footer>
+            <p>Built with AWS SAM, Moto, Pytest, and purely isolated Python code.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
